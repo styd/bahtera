@@ -4,6 +4,8 @@ require 'addressable/uri'
 require 'multi_json'
 
 module Bahtera
+  class RequestError < StandardError; end
+
   class << self
     BASE_URL    = "http://kateglo.bahtera.org/api.php"
     BASE_PARAMS = { format: 'json' }
