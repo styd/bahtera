@@ -63,3 +63,31 @@ describe Bahtera do
     end
   end
 end
+
+describe Bahtera::Kata do
+  describe '#initialize' do
+    it 'should initialize from valid json string' do
+      Bahtera::Kata.new(fixture_file('bahtera_kata_valid')).should be_a(Bahtera::Kata)
+    end
+
+    it 'should raise MultiJson::LoadError when initializing from invalid json string' do
+      expect {
+        Bahtera::Kata.new(fixture_file('bahtera_kata_invalid'))
+        }.to raise_error(MultiJson::LoadError)
+    end
+
+    describe 'assigning attribute with values' do
+      before do
+        @response = fixture_file 'bahtera_kata_valid'
+        @expected_attributes = MultiJson.load(@response)['kateglo']
+        @kata = Bahtera::Kata.new(@response)
+      end
+
+      Bahtera::Kata::ATTRIBUTE_NAMES.each do |attr_name|
+        it "should assign ##{attr_name} correctly" do
+          @kata.send(attr_name).should == @expected_attributes[attr_name]
+        end
+      end
+    end
+  end
+end

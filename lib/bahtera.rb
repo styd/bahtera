@@ -32,10 +32,27 @@ module Bahtera
   end
 
   class Kata
-    attr_accessor :attributes
+    ATTRIBUTE_NAMES = %w( phrase phrase_type lex_class ref_source def_count
+                          actual_phrase info notes updated created
+                          lex_class_name root definition reference proverbs
+                          translations relation all_relation)
+
+    attr_reader *ATTRIBUTE_NAMES
 
     def initialize(json_response)
-      @attributes = MultiJson.load json_response
+      parsed_json = MultiJson.load json_response
+      @json_response = parsed_json['kateglo']
+      assign_attribute_names
     end
+
+    private
+      def assign_attribute_names
+        ATTRIBUTE_NAMES.each do |attr_name|
+          if @json_response[attr_name]
+            instance_variable_set("@#{attr_name}",
+                                    @json_response[attr_name])
+          end
+        end
+      end
   end
 end
