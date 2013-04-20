@@ -10,47 +10,63 @@ module Bahtera
     BASE_URL    = "http://kateglo.bahtera.org/api.php"
     BASE_PARAMS = { format: 'json' }
 
-    def lookup(word)
-      if word =~ /\s/
-        word.split(' ').map do |w|
+    def lookup(lemma)
+      @lemma = lemma
+      if @lemma =~ /\s/
+        @lemma.split(' ').map do |l|
           begin
-            lookup(w)
+            lookup(l)
           rescue MultiJson::LoadError
           end
         end
       else
-        uri = Addressable::URI.parse BASE_URL
-        uri.query_values = BASE_PARAMS.merge(phrase: word)
-        response = Net::HTTP.get_response(uri)
+        @uri = Addressable::URI.parse BASE_URL
+        @uri.query_values = BASE_PARAMS.merge(phrase: @lemma)
+        response = Net::HTTP.get_response(@uri)
 
         unless response.kind_of? Net::HTTPSuccess
           raise Bahtera::RequestError, "HTTP Response: #{response.code} #{response.message}"
         end
-        Kata.new(response.body)
+        parse_response(response.body)
       end
+    end
+
+
+    private
+      def parse_response(response)
+        begin
+          parsed_json = MultiJson.load response
+          Kata.new parsed_json
+        rescue MultiJson::LoadError
+          LemmaNotFound.new("No entry found for '#{@lemma}'", @uri)
+        end
+      end
+  end
+
+  class LemmaNotFound
+    attr_reader :message, :uri
+
+    def initialize(message, uri)
+      @message = message
+      @uri = uri
     end
   end
 
   class Kata
-    ATTRIBUTE_NAMES = %w( phrase phrase_type lex_class ref_source def_count
-                          actual_phrase info notes updated created
-                          lex_class_name root definition reference proverbs
-                          translations relation all_relation)
-
-    attr_reader *ATTRIBUTE_NAMES
-
-    def initialize(json_response)
-      parsed_json = MultiJson.load json_response
-      @json_response = parsed_json['kateglo']
+    def initialize(hash)
+      @hash_response = hash['kateglo']
       assign_attribute_names
     end
 
+
     private
       def assign_attribute_names
-        ATTRIBUTE_NAMES.each do |attr_name|
-          if @json_response[attr_name]
+        attributes = @hash_response.keys
+        self.class.class_eval { attr_reader *attributes }
+        attributes.each do |attr_name|
+          if @hash_response[attr_name]
             instance_variable_set("@#{attr_name}",
-                                    @json_response[attr_name])
+                                    @hash_response[attr_name])
           end
         end
       end

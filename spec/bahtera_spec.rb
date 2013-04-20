@@ -34,10 +34,10 @@ describe Bahtera do
     it '#lookup invalid words should raise MultiJson::LoadError' do
       stub_net_http('bahtera_kata_invalid')
       word = 'invalid_kata'
-      expect { Bahtera.lookup(word) }.to raise_error(MultiJson::LoadError)
+      Bahtera.lookup(word).should be_a(Bahtera::LemmaNotFound)
     end
 
-    it '#lookup mix of invalid & valid words should return an array of nil & Bahtera::Kata' do
+    it '#lookup mix of invalid & valid words returns an array of LemmaNotFound & Kata instances' do
       word_hash = {
         kata:     'bahtera_kata_valid',
         gwempor:  'bahtera_kata_invalid'
@@ -50,7 +50,7 @@ describe Bahtera do
       results = Bahtera.lookup('kata gwempor')
       results.should be_a(Array)
       results.first.should be_a(Bahtera::Kata)
-      results.last.should be_nil
+      results.last.should be_a(Bahtera::LemmaNotFound)
     end
 
     describe 'should raise Bahtera::RequestError when' do
@@ -67,23 +67,23 @@ end
 describe Bahtera::Kata do
   describe '#initialize' do
     it 'should initialize from valid json string' do
-      Bahtera::Kata.new(fixture_file('bahtera_kata_valid')).should be_a(Bahtera::Kata)
+      Bahtera::Kata.new(parsed_fixture_file('bahtera_kata_valid')).should be_a(Bahtera::Kata)
     end
 
     it 'should raise MultiJson::LoadError when initializing from invalid json string' do
       expect {
-        Bahtera::Kata.new(fixture_file('bahtera_kata_invalid'))
+        Bahtera::Kata.new(parsed_fixture_file('bahtera_kata_invalid'))
         }.to raise_error(MultiJson::LoadError)
     end
 
     describe 'assigning attribute with values' do
+      parsed_response = parsed_fixture_file('bahtera_kata_valid')
       before do
-        @response = fixture_file 'bahtera_kata_valid'
-        @expected_attributes = MultiJson.load(@response)['kateglo']
-        @kata = Bahtera::Kata.new(@response)
+        @expected_attributes = parsed_response['kateglo']
+        @kata = Bahtera::Kata.new(parsed_response)
       end
 
-      Bahtera::Kata::ATTRIBUTE_NAMES.each do |attr_name|
+      parsed_response['kateglo'].keys.each do |attr_name|
         it "should assign ##{attr_name} correctly" do
           @kata.send(attr_name).should == @expected_attributes[attr_name]
         end

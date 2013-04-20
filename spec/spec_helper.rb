@@ -41,6 +41,10 @@ def attach_response_body(response, body)
   response
 end
 
+def parsed_fixture_file(filename)
+  MultiJson.load fixture_file(filename)
+end
+
 def fixture_file(filename)
   file_path = File.join(File.expand_path(File.dirname(__FILE__)),
                         'fixtures', "#{filename}.json" )
