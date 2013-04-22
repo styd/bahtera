@@ -3,8 +3,6 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in bahtera.gemspec
 gemspec
 
-gem 'multi_json'
-gem 'addressable'
 
 # To use in development
 group :development do

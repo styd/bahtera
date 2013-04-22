@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.version       = Bahtera::VERSION
   gem.authors       = ["Adinda Praditya"]
   gem.email         = ["apraditya@gmail.com"]
-  gem.description   = %q{The unofficial Ruby library for accessing Kateglo Bahtera API}
+  gem.description   = %q{The unofficial Ruby library for accessing Kateglo Bahtera API, an online dictionary, thesaurus and glossarium for bahasa Indonesia}
   gem.summary       = %q{Kateglo Bahtera Ruby gem}
   gem.homepage      = "https://github.com/apraditya/bahtera"
 
@@ -19,5 +19,8 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
+
+  gem.add_runtime_dependency 'addressable'
+  gem.add_runtime_dependency 'multi_json'
 
 end
