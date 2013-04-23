@@ -28,9 +28,11 @@ module Bahtera
       def assign_attribute_names(hash_response)
         super hash_response
         %w( root definition reference proverbs translations all_relation ).each do |attribute_name|
-          override_array_hash(attribute_name)
-          self.class.send :define_method, "has_#{attribute_name}?" do
-            send(attribute_name).any?
+          if send(attribute_name) && send(attribute_name).is_a?(Array)
+            override_array_hash(attribute_name)
+            self.class.send :define_method, "has_#{attribute_name}?" do
+              send(attribute_name).any?
+            end
           end
         end
         assign_relations if relation.any?
