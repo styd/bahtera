@@ -10,10 +10,22 @@ module Bahtera
         attributes = hash_response.keys
         self.class.class_eval { attr_reader *attributes }
         attributes.each do |attr_name|
-          if hash_response[attr_name]
-            instance_variable_set("@#{attr_name}",
-                                    hash_response[attr_name])
+          attribute_value = hash_response[attr_name]
+          if attribute_value
+            if attribute_value.is_a?(Array)
+              assign_array_attributes(attr_name, attribute_value)
+            else
+              instance_variable_set("@#{attr_name}", attribute_value)
+            end
           end
+        end
+      end
+
+      def assign_array_attributes(attr_name, hash_array)
+        value = hash_array.map { |hash_attr| BaseKata.new(hash_attr) }
+        instance_variable_set("@#{attr_name}", value)
+        self.class.send :define_method, "has_#{attr_name}?" do
+          send(attr_name).any?
         end
       end
   end
@@ -27,14 +39,6 @@ module Bahtera
     private
       def assign_attribute_names(hash_response)
         super hash_response
-        %w( root definition reference proverbs translations all_relation ).each do |attribute_name|
-          if send(attribute_name) && send(attribute_name).is_a?(Array)
-            override_array_hash(attribute_name)
-            self.class.send :define_method, "has_#{attribute_name}?" do
-              send(attribute_name).any?
-            end
-          end
-        end
         assign_relations if relation.any?
       end
 
@@ -55,13 +59,6 @@ module Bahtera
             end
           end
         end
-      end
-
-      def override_array_hash(attr_name)
-        new_value = send(attr_name).map do |hash_attr|
-          BaseKata.new(hash_attr)
-        end
-        instance_variable_set("@#{attr_name}", new_value)
       end
   end
 end
