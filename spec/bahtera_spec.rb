@@ -9,7 +9,7 @@ describe Bahtera do
     it 'should send request to the correct address' do
       word = 'makan'
       Net::HTTP.should_receive(:get_response).
-              with(Addressable::URI.parse("http://kateglo.bahtera.org/api.php?format=json&phrase=#{word}")).
+              with(Addressable::URI.parse("#{Bahtera.singleton_class::BASE_URL}?format=json&phrase=#{word}")).
               and_return(stub_net_http_success('bahtera_kata_valid'))
       Bahtera.lookup word
     end
@@ -44,7 +44,7 @@ describe Bahtera do
       }
       word_hash.each do |word, filename|
         Net::HTTP.stub(:get_response).
-          with(Addressable::URI.parse("http://kateglo.bahtera.org/api.php?format=json&phrase=#{word}")).
+          with(Addressable::URI.parse("#{Bahtera.singleton_class::BASE_URL}?format=json&phrase=#{word}")).
           and_return(stub_net_http_success(filename))
       end
       results = Bahtera.lookup('kata gwempor')

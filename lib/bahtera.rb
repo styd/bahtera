@@ -8,7 +8,7 @@ module Bahtera
   class RequestError < StandardError; end
 
   class << self
-    BASE_URL    = "http://kateglo.bahtera.org/api.php"
+    BASE_URL    = "http://kateglo.com/api.php"
     BASE_PARAMS = { format: 'json' }
 
     def lookup(lemma)
