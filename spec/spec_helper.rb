@@ -20,7 +20,7 @@ def stub_net_http(filename = nil, code = nil)
   else
     stub_net_http_error(code)
   end
-  Net::HTTP.stub(:get_response).and_return(response)
+  allow(Net::HTTP).to receive(:get_response).and_return(response)
 end
 
 def stub_net_http_success(filename)

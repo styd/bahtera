@@ -3,12 +3,12 @@ require 'spec_helper'
 describe Bahtera do
   describe '#lookup' do
     it 'should respond to #lookup' do
-      Bahtera.should respond_to(:lookup)
+      expect(Bahtera).to respond_to(:lookup)
     end
 
     it 'should send request to the correct address' do
       word = 'makan'
-      Net::HTTP.should_receive(:get_response).
+      expect(Net::HTTP).to receive(:get_response).
               with(Addressable::URI.parse("#{Bahtera.singleton_class::BASE_URL}?format=json&phrase=#{word}")).
               and_return(stub_net_http_success('bahtera_kata_valid'))
       Bahtera.lookup word
@@ -21,20 +21,20 @@ describe Bahtera do
 
       it '#lookup a valid word should return an instance of Bahtera::Kata' do
         word = 'kata'
-        Bahtera.lookup(word).should be_a(Bahtera::Kata)
+        expect(Bahtera.lookup(word)).to be_kind_of(Bahtera::Kata)
       end
 
       it '#lookup many valid words should return an array of Bahtera::Kata instances' do
         results = Bahtera.lookup('minum makan belajar')
-        results.should be_a(Array)
-        results.all? { |r| r.is_a?(Bahtera::Kata) }.should be_true
+        expect(results).to be_kind_of(Array)
+        results.each { |r| expect(r.is_a?(Bahtera::Kata)).to be true }
       end
     end
 
     it '#lookup invalid words should raise MultiJson::LoadError' do
       stub_net_http('bahtera_kata_invalid')
       word = 'invalid_kata'
-      Bahtera.lookup(word).should be_a(Bahtera::LemmaNotFound)
+      expect(Bahtera.lookup(word)).to be_kind_of(Bahtera::LemmaNotFound)
     end
 
     it '#lookup mix of invalid & valid words returns an array of LemmaNotFound & Kata instances' do
@@ -43,14 +43,14 @@ describe Bahtera do
         gwempor:  'bahtera_kata_invalid'
       }
       word_hash.each do |word, filename|
-        Net::HTTP.stub(:get_response).
+        allow(Net::HTTP).to receive(:get_response).
           with(Addressable::URI.parse("#{Bahtera.singleton_class::BASE_URL}?format=json&phrase=#{word}")).
           and_return(stub_net_http_success(filename))
       end
       results = Bahtera.lookup('kata gwempor')
-      results.should be_a(Array)
-      results.first.should be_a(Bahtera::Kata)
-      results.last.should be_a(Bahtera::LemmaNotFound)
+      expect(results).to be_kind_of(Array)
+      expect(results.first).to be_kind_of(Bahtera::Kata)
+      expect(results.last).to be_kind_of(Bahtera::LemmaNotFound)
     end
 
     describe 'should raise Bahtera::RequestError when' do
