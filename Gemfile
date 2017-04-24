@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in bahtera.gemspec
 gemspec
 
 
@@ -9,7 +8,6 @@ group :development do
   gem 'guard'
   gem 'guard-rspec'
   gem 'pry', require: true
-  gem 'pry-debugger'
 
   if RbConfig::CONFIG['host_os'] =~ /darwin/
     gem 'growl'

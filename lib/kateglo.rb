@@ -1,10 +1,10 @@
-require 'bahtera/version'
-require 'bahtera/kata'
+require 'kateglo/version'
+require 'kateglo/kata'
 require 'net/http'
 require 'addressable/uri'
 require 'multi_json'
 
-module Bahtera
+module Kateglo
   class RequestError < StandardError; end
 
   class << self
@@ -14,7 +14,7 @@ module Bahtera
     def lookup(lemma)
       @lemma = lemma
       if @lemma =~ /\s/
-        @lemma.split(' ').map do |l|
+        @lemma.split(/\s+/).map do |l|
           begin
             lookup(l)
           rescue MultiJson::LoadError
@@ -26,7 +26,7 @@ module Bahtera
         response = Net::HTTP.get_response(@uri)
 
         unless response.kind_of? Net::HTTPSuccess
-          raise Bahtera::RequestError, "HTTP Response: #{response.code} #{response.message}"
+          raise Kateglo::RequestError, "HTTP Response: #{response.code} #{response.message}"
         end
         parse_response(response.body)
       end
