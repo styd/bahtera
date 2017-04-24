@@ -1,4 +1,4 @@
-module Bahtera
+module Kateglo
   class BaseKata
     def initialize(hash)
       assign_attribute_names hash

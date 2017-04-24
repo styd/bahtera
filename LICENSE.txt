@@ -1,4 +1,4 @@
-Copyright (c) 2013 Adinda Praditya
+Copyright (c) 2013 Adrian Setyadi, Adinda Praditya
 
 MIT License
 
