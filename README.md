@@ -1,6 +1,6 @@
 # Kateglo
 
-TODO: Write a gem description
+Wrapper for Kateglo API.
 
 ## Installation
 
@@ -18,7 +18,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'kateglo'
+
+kata = Kateglo.lookup("mata hati")
+```
 
 ## Contributing
 

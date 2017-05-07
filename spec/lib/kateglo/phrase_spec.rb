@@ -1,28 +1,28 @@
 require 'spec_helper'
 
-describe Bahtera::Kata do
+describe Kateglo::Phrase do
   describe '#initialize' do
     it 'should initialize from valid json string' do
-      expect(Bahtera::Kata.new(parsed_fixture_file('bahtera_kata_valid'))).to be_kind_of(Bahtera::Kata)
+      expect(Kateglo::Phrase.new(parsed_fixture_file('kateglo_phrase_valid'))).to be_kind_of(Kateglo::Phrase)
     end
 
     it 'should raise MultiJson::LoadError when initializing from invalid json string' do
       expect {
-        Bahtera::Kata.new(parsed_fixture_file('bahtera_kata_invalid'))
-        }.to raise_error(MultiJson::LoadError)
+        Kateglo::Phrase.new(parsed_fixture_file('kateglo_phrase_invalid'))
+      }.to raise_error(MultiJson::LoadError)
     end
 
     describe 'assigning attribute with values' do
-      parsed_response = parsed_fixture_file('bahtera_kata_valid')
+      parsed_response = parsed_fixture_file('kateglo_phrase_valid')
       before do
-        @expected_attributes = parsed_response['kateglo']
-        @kata = Bahtera::Kata.new(parsed_response)
+        @expected_attributes = parsed_response
+        @kata = Kateglo::Phrase.new(parsed_response)
       end
 
       array_attributes = {}
-      parsed_response['kateglo'].keys.each do |attr_name|
-        if parsed_response['kateglo'][attr_name].is_a?(Array)
-          array_attributes[attr_name] = parsed_response['kateglo'][attr_name]
+      parsed_response.keys.each do |attr_name|
+        if parsed_response[attr_name].is_a?(Array)
+          array_attributes[attr_name] = parsed_response[attr_name]
           next
         end
         it "should assign ##{attr_name} correctly" do
@@ -31,9 +31,9 @@ describe Bahtera::Kata do
       end
 
       array_attributes.each do |attr_name, array|
-        it "##{attr_name} should transform to the array of Bahtera::BaseKata" do
+        it "##{attr_name} should transform to the array of Kateglo::Word" do
           @kata.send(attr_name).all? do |entry|
-            expect(entry.is_a?(Bahtera::BaseKata)).to be true
+            expect(entry.is_a?(Kateglo::Word)).to be true
           end
         end
 

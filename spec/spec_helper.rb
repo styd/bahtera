@@ -1,4 +1,4 @@
-require 'bahtera'
+require 'kateglo'
 
 class SocketStub
   def initialize(body)
@@ -30,7 +30,7 @@ def stub_net_http_success(filename)
 end
 
 def stub_net_http_error(code)
-  body = fixture_file("bahtera_kata_error_#{code}")
+  body = fixture_file("kateglo_phrase_error_#{code}")
   response = Net::HTTPClientError.new(Net::HTTP.version_1_2, code, '')
   attach_response_body(response, body)
 end
