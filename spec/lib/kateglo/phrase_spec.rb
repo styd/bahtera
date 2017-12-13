@@ -45,7 +45,7 @@ describe Kateglo::Phrase do
       end
 
       describe 'assigning relation methods' do
-        %w( sinonim antonim berkaitan turunan gabungan_kata peribahasa).each do |attr_name|
+        %w(sinonim antonim berkaitan turunan gabungan_kata peribahasa).each do |attr_name|
           has_method_name = "has_#{attr_name}?"
 
           it "should respond to ##{attr_name} & ##{has_method_name}" do

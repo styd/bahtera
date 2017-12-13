@@ -19,7 +19,7 @@ describe Kateglo do
 
     describe '#lookup valid words' do
       before do
-        stub_net_http('kateglo_phrase_valid')
+        stub_net_http('kateglo_phrase_valid')['kateglo']
       end
 
       it '#lookup a valid word should return an instance of Kateglo::Phrase' do
@@ -29,7 +29,7 @@ describe Kateglo do
     end
 
     it '#lookup invalid words should raise MultiJson::LoadError' do
-      stub_net_http('kateglo_phrase_invalid')
+      stub_net_http('kateglo_phrase_invalid')['kateglo']
       word = 'invalid_kata'
       expect(Kateglo.lookup(word)).to be_kind_of(Kateglo::PhraseNotFound)
     end

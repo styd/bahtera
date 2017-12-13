@@ -29,7 +29,7 @@ module Kateglo
                   "HTTP Response: #{response.code} #{response.message}"
         end
 
-        raw_result = MultiJson.load(response.body)["kateglo"]
+        raw_result = MultiJson.load(response.body)['kateglo']
                               .tap{|h| h.delete("phrase") if h.has_key?("phrase") }
       end
       result = parse_response(raw_result)
